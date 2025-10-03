@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+@layer components {
+	.folder-icon {
+		@apply text-xl mr-2;
+	}
+
+	.file-icon {
+		@apply text-base mr-2;
+	}
+
+	.folder-header {
+		@apply cursor-pointer p-3 rounded-lg transition-colors duration-200 select-none flex items-center hover:bg-gray-100;
+	}
+
+	.folder-content {
+		@apply ml-5 border-l-2 border-gray-200 pl-4 mt-1;
+	}
+
+	.file-item {
+		@apply p-2 flex items-center rounded-lg transition-colors duration-200 hover:bg-gray-50;
+	}
+
+	.breadcrumb-link {
+		@apply text-blue-500 no-underline font-medium hover:underline;
+	}
+
+	.file-link {
+		@apply text-blue-500 no-underline font-medium hover:underline hover:text-blue-700;
+	}
+
+	.folder-name {
+		@apply font-semibold text-gray-800 no-underline hover:text-blue-500 hover:underline;
+	}
+}

@@ -1,0 +1,11 @@
+# Just to make sure .env files are ignored
+.env
+
+# Ignore all directories
+*/
+
+# Allow specific directories and their contents
+!src/
+!src/**
+!Demo/
+!Demo/**
