@@ -3,14 +3,14 @@ import { setupRoutes } from './src/routes/index.ts'
 
 const app = fastify()
 
-// Setup all routes
 await setupRoutes(app)
 
-// Start the server
+const PORT = isNaN(Number(process.env.PORT)) ? 3000 : Number(process.env.PORT)
+
 const start = async () => {
 	try {
-		await app.listen({ port: 3000 })
-		console.log('Better Moodle available at http://localhost:3000')
+		await app.listen({ port: PORT })
+		console.log(`Better Moodle available at http://localhost:${PORT}`)
 	} catch (err) {
 		app.log.error(err)
 		process.exit(1)
