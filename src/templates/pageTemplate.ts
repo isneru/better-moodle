@@ -60,6 +60,7 @@ export function generatePageHTML(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <link href="/styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body class="font-sans bg-gray-100 m-0">
     <div class="min-h-screen">
@@ -71,7 +72,7 @@ export function generatePageHTML(
             <p class="text-center text-emerald-100 text-lg">No bullsh*t session timeouts, just seamless access to your course materials.</p>
             <p class="text-center text-emerald-100 text-lg">All in one place.</p>
         </div>
-        
+
         <!-- Navigation Bar -->
         <div class="bg-white border-b border-gray-200 px-8 py-4">
             <div class="flex items-center justify-between">
@@ -79,9 +80,9 @@ export function generatePageHTML(
                     <span class="font-medium">${breadcrumb}</span>
                 </div>
                 <div class="relative">
-                    <input 
-                        type="text" 
-                        placeholder="Search files..." 
+                    <input
+                        type="text"
+                        placeholder="Search files..."
                         class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-64"
                         id="searchInput"
                     >
@@ -91,7 +92,7 @@ export function generatePageHTML(
                 </div>
             </div>
         </div>
-        
+
         <!-- Main Content -->
         <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-sm m-4">
             <!-- File Tree -->
@@ -100,64 +101,131 @@ export function generatePageHTML(
             </div>
         </div>
     </div>
-    
+
     <script>
+        const STORAGE_KEY = 'better-moodle-neru';
+
+        // Get folder path for storage
+        function getFolderPath(folderElement) {
+            const folderName = folderElement.querySelector('.folder-name').textContent;
+            let path = folderName;
+            let parent = folderElement.closest('.folder-content');
+
+            while (parent) {
+                const parentFolder = parent.previousElementSibling?.querySelector('.folder-name');
+                if (parentFolder) {
+                    path = parentFolder.textContent + '/' + path;
+                }
+                parent = parent.closest('.folder-item')?.closest('.folder-content');
+            }
+
+            return path;
+        }
+
+        // Load folder states from localStorage
+        function loadFolderStates() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                return stored ? JSON.parse(stored) : {};
+            } catch (e) {
+                console.warn('Error loading folder states:', e);
+                return {};
+            }
+        }
+
+        // Save folder states to localStorage
+        function saveFolderStates(states) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(states));
+            } catch (e) {
+                console.warn('Error saving folder states:', e);
+            }
+        }
+
         function toggleFolder(element) {
             const content = element.nextElementSibling;
             const chevronIcon = element.querySelector('svg:first-child');
-            
-            console.log('Toggling folder:', element);
+            const folderItem = element.closest('.folder-item');
+            const folderPath = getFolderPath(folderItem);
+
+            console.log('Toggling folder:', folderPath);
             console.log('Content element:', content);
-            
+
+            const folderStates = loadFolderStates();
+
             if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
                 chevronIcon.style.transform = 'rotate(0deg)';
+                folderStates[folderPath] = 'open';
                 console.log('Showing folder');
             } else {
                 content.classList.add('hidden');
                 chevronIcon.style.transform = 'rotate(-90deg)';
+                folderStates[folderPath] = 'closed';
                 console.log('Hiding folder');
             }
+
+            saveFolderStates(folderStates);
         }
-        
-        // Initialize all folders as collapsed
+
+        // Initialize all folders based on localStorage or default to collapsed
         document.addEventListener('DOMContentLoaded', function() {
             const folders = document.querySelectorAll('.folder-content');
             const chevronIcons = document.querySelectorAll('.folder-header svg:first-child');
-            
+            const folderStates = loadFolderStates();
+
             console.log('Found folders:', folders.length);
-            
-            folders.forEach(folder => {
-                folder.classList.add('hidden');
-            });
-            
+            console.log('Loaded states:', folderStates);
+
+            // Set default styles for all chevrons
             chevronIcons.forEach(icon => {
-                icon.style.transform = 'rotate(-90deg)';
                 icon.style.transition = 'transform 0.2s ease';
             });
+
+            // Apply states from localStorage or default to collapsed
+            folders.forEach(folder => {
+                const folderItem = folder.closest('.folder-item');
+                const folderPath = getFolderPath(folderItem);
+                const chevronIcon = folderItem.querySelector('.folder-header svg:first-child');
+
+                if (folderStates[folderPath] === 'open') {
+                    folder.classList.remove('hidden');
+                    chevronIcon.style.transform = 'rotate(0deg)';
+                } else {
+                    folder.classList.add('hidden');
+                    chevronIcon.style.transform = 'rotate(-90deg)';
+                }
+            });
         });
-        
+
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             const fileItems = document.querySelectorAll('.file-item, .folder-item');
-            
+
             if (searchTerm === '') {
                 // Reset everything to original state when search is cleared
                 fileItems.forEach(item => {
                     item.style.display = '';
                 });
-                
-                // Reset all folders to collapsed state
+
+                // Restore folder states from localStorage
                 const folders = document.querySelectorAll('.folder-content');
                 const chevronIcons = document.querySelectorAll('.folder-header svg:first-child');
-                
+                const folderStates = loadFolderStates();
+
                 folders.forEach(folder => {
-                    folder.classList.add('hidden');
-                });
-                
-                chevronIcons.forEach(icon => {
-                    icon.style.transform = 'rotate(-90deg)';
+                    const folderItem = folder.closest('.folder-item');
+                    const folderPath = getFolderPath(folderItem);
+                    const chevronIcon = folderItem.querySelector('.folder-header svg:first-child');
+
+                    if (folderStates[folderPath] === 'open') {
+                        folder.classList.remove('hidden');
+                        chevronIcon.style.transform = 'rotate(0deg)';
+                    } else {
+                        folder.classList.add('hidden');
+                        chevronIcon.style.transform = 'rotate(-90deg)';
+                    }
                 });
             } else {
                 // Search mode: show/hide based on search term
@@ -185,5 +253,5 @@ export function generatePageHTML(
     </script>
 </body>
 </html>
-	`
+        `
 }

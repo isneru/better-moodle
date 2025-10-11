@@ -24,6 +24,21 @@ export async function setupRoutes(app: FastifyInstance) {
 		}
 	)
 
+	app.get(
+		'/favicon.png',
+		async (request: FastifyRequest, reply: FastifyReply) => {
+			const faviconPath = path.join(rootDir, 'src', 'assets', 'favicon.png')
+			try {
+				const faviconStream = fs.createReadStream(faviconPath)
+				reply.type('image/png')
+				return reply.send(faviconStream)
+			} catch (error) {
+				reply.code(404)
+				return 'Favicon not found'
+			}
+		}
+	)
+
 	app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
 		const fileTree = scanDirectory(rootDir)
 		const html = generatePageHTML(fileTree, '', 'Better Moodle')
