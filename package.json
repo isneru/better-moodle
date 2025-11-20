@@ -6,8 +6,8 @@
 	"main": "index.ts",
 	"type": "module",
 	"scripts": {
-		"start": "tsx --watch index.ts",
-		"dev": "tsx --watch index.ts",
+		"start": "tsx index.ts",
+		"dev": "tsx --trace-warnings --watch index.ts",
 		"build": "tsc",
 		"build-css": "npx @tailwindcss/cli -i ./src/styles/input.css -o ./src/styles/output.css",
 		"watch-css": "npx @tailwindcss/cli -i ./src/styles/input.css -o ./src/styles/output.css --watch"
