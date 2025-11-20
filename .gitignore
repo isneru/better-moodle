@@ -1,11 +1,20 @@
-# Just to make sure .env files are ignored
+# --- Node.js ---
+node_modules/
+dist/
+build/
+npm-debug.log*
+
+# --- Python ---
+venv/
+__pycache__/
+*.pyc
+
+# --- Project Specific ---
+# The folder where Moodle files are downloaded
+materials/
+# Environment variables (Keep this secret!)
 .env
 
-# Ignore all directories
-*/
-
-# Allow specific directories and their contents
-!src/
-!src/**
-!Demo/
-!Demo/**
+# --- OS System Files ---
+.DS_Store
+Thumbs.db

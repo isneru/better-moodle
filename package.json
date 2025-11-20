@@ -6,7 +6,7 @@
 	"main": "index.ts",
 	"type": "module",
 	"scripts": {
-		"start": "tsx index.ts",
+		"prod": "tsx index.ts",
 		"dev": "tsx --trace-warnings --watch index.ts",
 		"build": "tsc",
 		"build-css": "npx @tailwindcss/cli -i ./src/styles/input.css -o ./src/styles/output.css",
