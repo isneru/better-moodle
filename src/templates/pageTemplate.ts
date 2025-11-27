@@ -53,6 +53,8 @@ export function generatePageHTML(
 	const treeHTML = generateTreeHTML(fileTree)
 	const breadcrumb = generateBreadcrumb(currentPath)
 
+	const zipLink = currentPath ? `/zip/${currentPath}` : '/zip/'
+
 	return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,16 +81,26 @@ export function generatePageHTML(
                 <div class="flex items-center text-gray-600 font-mono">
                     <span class="font-medium">${breadcrumb}</span>
                 </div>
-                <div class="relative">
-                    <input
-                        type="text"
-                        placeholder="Search files..."
-                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-64"
-                        id="searchInput"
-                    >
-                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
-                    </svg>
+
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <a href="${zipLink}" class="flex items-center justify-center px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors no-underline font-medium text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download Zip
+                    </a>
+
+                    <div class="relative flex-grow md:flex-grow-0">
+                        <input
+                            type="text"
+                            placeholder="Pesquisar..."
+                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full md:w-64"
+                            id="searchInput"
+                        >
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
