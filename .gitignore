@@ -18,3 +18,5 @@ materials/
 # --- OS System Files ---
 .DS_Store
 Thumbs.db
+
+moodle_sync.log
